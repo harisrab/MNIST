@@ -1,4 +1,5 @@
 """ Main Program """
+
 from ANN import neural_network as ANN
 import numpy as np
 import sys
@@ -9,7 +10,7 @@ def main():
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
     #Reshape the Dataset
-    images, labels = x_train[0 : 1000].reshape(1000, 28 * 28), y_train[0 : 1000]
+    images, labels = (x_train[0 : 1000].reshape(1000, 28 * 28) / 255, y_train[0 : 1000])
     
     #Create Empty Matrix 1000 x 10
     one_hot_labels = np.zeros((len(labels), 10))

@@ -11,11 +11,18 @@ class neural_network:
         self.__lr = lr
         self.__hidden_size = hidden_size        
         
+        self.__error = 0.0
+        self.__correct_count = 0
+
         np.random.seed(1)
         
-        self.__weights_01 = 2 * np.random.random((len(self.__training_dataset[0]), self.__hidden_size)) - 1
-        self.__weights_12 = 2 * np.random.random((self.__hidden_size, len(self.__training_targets[0]))) - 1
+        self.__weights_01 = 0.2 * np.random.random((784, self.__hidden_size)) - 0.1
+        self.__weights_12 = 0.2 * np.random.random((self.__hidden_size, len(self.__training_targets[0]))) - 0.1
         
+        #Activation Functions
+        self.RELU = lambda x : (x >= 0) * x
+        self.RELU2DERIV = lambda x : x >= 0
+
         print '[+] Neural Network Initilized'
 
     def forward_propagation(self, vector):
@@ -30,11 +37,16 @@ class neural_network:
         
         #Forward Propagate
         layer_1, layer_2, layer_3 = self.forward_propagation(self.__training_dataset[p : p + 1])
+        
 
         #Calculate Error
-        self.__error += np.sum((layer_3 - self.__training_targets[p : p + 1]) ** 2)
-        print "Error inside = ", self.__error
+        
+        self.__error += np.sum((self.__training_targets[p : p + 1] - layer_3) ** 2)
+        
+        
+        
         self.__correct_count += int(np.argmax(layer_2)) == np.argmax(self.__training_targets[p : p + 1])
+        
         #Calculate Deltas
         l2_delta = layer_3 - self.__training_targets[p : p + 1]
         l1_delta = l2_delta.dot(self.__weights_12.T) * self.RELU2DERIV(layer_2)
@@ -48,18 +60,12 @@ class neural_network:
         for i in range(epoch):
             self.__error = 0.0
             self.__correct_count = 0
+            
             print '[-] Epoch ', i
+            
             for datapoint in range(len(self.__training_dataset)):
                 self.backpropagation(datapoint)
             print "Error = ", self.__error
             
-
-    def RELU(self, x):
-
-        return (x > 0) * x
-
-    def RELU2DERIV(self, x):
-        
-        return (x > 0)
 
 
