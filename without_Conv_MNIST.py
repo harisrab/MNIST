@@ -9,9 +9,6 @@ from keras.datasets import mnist
 
 print '[+] Training Libraries Imported'
 
-
-
-
 def Preprocess_Training_Data():
     """Clean and Manage the training data in correct format for input into the neural network"""
     
@@ -77,22 +74,6 @@ class ANN():
         self.__tanh       = lambda x : np.tanh(x)
         self.__tanh2deriv = lambda x : (1 - (x ** 2))
         self.__softmax    = lambda x : (np.exp(x) / np.sum(np.exp(x), axis = 1, keepdims = True))
-
-    	'''Convolutional Parameters'''
-
-    	#Dimensions of Orignal Image
-    	self.__input_rows       = 28
-    	self.__input_columns    = 28
-    
-    	#Dimensions of Subsection
-    	self.__kernel_rows      = 3
-    	self.__kernel_columns   = 3
-
-    	self.__num_kernels      = 16
-
-    	self.__hidden_size      = ((input_rows - kernel_rows) * (inputs_cols - kernel_cols)) *num_kernels 
-    
-    	self.__kernels          = 0.02 * np.random.random.((kernel_rows * kernel_cols, num_kernels)) - 0.01
         
         print '[+] Neural Parameters Established'
         print ''
@@ -103,59 +84,24 @@ class ANN():
         """Forward Propagate the Vector and Acquire the Output"""
         
         layer_0 = vector
-	layer_0 = layer_0.reshape(layer_0.reshape(layer_0.shape[0], 28, 28))
-	layer_0.shape
-
-	sects = list()
-
-	for self.__row_start in range(layer_0.shape[1] - self.__kernel_rows):
-		for self.__col_start in range(layer_0.shape[2] - self.__kernel_cols):
-			sect = Conv_Subsection(layer_0, self.__row_start, self.__row_start + self.__kernel_rows, self.__col_start, self.__col_start + self.__kernel_cols)
-		sects.append(sect)
-
-	expanded_input = np.concatenate(sects, axis = 1)
-	es = expanded_input.shape
-	flattened_input = expanded_input.reshape(es[0] * es[1], -1)
-	
-	kernel_output = flattened_input.dot(self.__kernels)
-	
-        layer_1 = self.__tanh(kernel_output.reshape(es[0], -1))
+        layer_1 = self.__tanh(np.dot(layer_0, self.__weights_01))
         layer_2 = np.dot(layer_1, self.__weights_12)
         
-	
         return layer_0, layer_1, layer_2
 
     
     def backpropagation(self, i):
-        """Conduct a batchwise backpropagtion to evaluate weights and kernels"""
+        """Conduct a batchwise backpropagtion to evaluate weights"""
         
         batch_start, batch_end = ((i * self.__batch_size), ((i + 1) * self.__batch_size))
         
         layer_0 = self.__training_data[batch_start : batch_end]        
-        layer_0 = layer_0.reshape(layer_0.shape[0], 28, 28)
-        layer_0.shape
-
-        sects = list()
-        for self.__row_start in range(layer_0.shape[2] - self.__kernel_cols):
-            for self.__col_start in range(layer_0.shape[0] - self.__kernel_cols):
-                sect = self.Conv_Subsection(layer_0, self.__row_start, self.__row_start + self.__kernel_rows, \
-					    self.__col_start, self.__col_start + self.__kernel_cols)
-                
-		sects.append(sects)
-
-        expanded_input = np.concatenate(sects, axis = 1)
-        es = expanded_input.shape
-        flattened_input = expanded_input.reshape(es[0] * es[1], -1)
-
-        kernel_output = flattened_input.dot(self.__kernels)
-
-
-        layer_1 = self.__tanh(kernel_output.reshape(es[0], -1))
+        layer_1 = self.__tanh(np.dot(layer_0, self.__weights_01))
         
         #Add a dropout to the layer
         dropout_mask = np.random.randint(2, size = layer_1.shape)
+        
         layer_1     *= dropout_mask * 2
-
         layer_2      = self.__softmax(np.dot(layer_1, self.__weights_12))
         
         
@@ -167,12 +113,8 @@ class ANN():
         layer_1_delta *= dropout_mask
         
         self.__weights_12 += self.__alpha * layer_1.T.dot(layer_2_delta)
-        
-        l1d_reshape = layer_1_delta.reshape(kernel_output.shape)
-        k_update = flattened_input.T.dot(l1d_reshape)
-
-        self.__kernels -= self.__alpha * k_update
-
+        self.__weights_01 += self.__alpha * layer_0.T.dot(layer_1_delta)
+    
     def train(self):
         """Batchwise Train the Neural Network"""
         
@@ -198,28 +140,17 @@ class ANN():
                                  "I:" + str(j) + \
                                  " Test-Acc:"+str(self.__test_correct_cnt/float(len(self.__test_data)))+\
                                  " Train-Acc:" + str(self.__correct_cnt/float(len(self.__training_data))))
-    
-
-    def Conv_Subsection(self, layer, row_from, row_to, column_from, column_to):
-        
-        #Cut the piece from the image
-        section = layer[:, row_from : row_to, column_from : column_to]
-        
-        #Reshape the cut out from the image
-        section = section.reshape(-1, 1, row_to - row_from, column_to - column_from)
-        
-        return section
-
-
+            
 def main(): 
     """Main Function to Understand the Process in Condensed Fashion"""
     
     #Acquire and Clean Test and Training Data
     training_data, training_targets = Preprocess_Training_Data()
     test_images,   test_labels      = Preprocess_Test_Data()
-        
+    
     alpha            = 2
-    epochs           = 300
+    epochs       = 300
+    hidden_size      = 100
     pixels_per_image = 784
     num_labels       = 10
     batch_size       = 100
@@ -234,5 +165,3 @@ def main():
         
 if __name__ == '__main__':
     main()
-    
-    
