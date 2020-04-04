@@ -1,11 +1,21 @@
 # Barebones Neural Network to Detect Numbers
 
-Now this was time for me to learn more about the neural networks and discover wonderful mechanisms under the hood of state of the art libraries already available on the market. What could be better than notching up the difficulty level from simulating logic gates to training the brain on to detect images from the MNIST Dataset. Above is the code and below is explaination, discussing how does it actually go about detecting images.
+Now this was time for me to learn more about the neural networks and discover wonderful mechanisms under the hood of state of the art libraries already available on the market. What could be better than notching up the difficulty level from simulating logic gates to training the brain to detect images from the MNIST Dataset. Above is the code and below is explaination, discussing how does it actually goes about detecting images. 
 
-# New Features!
+## How to Get the Code Up and Running
 
-  - Import a HTML file and watch it magically convert to Markdown
-  - Drag and drop images (requires your Dropbox account be linked)
+### Download the Dataset
+There are many ways to download dataset, but here is the one that directly imports the dataset into python with 2 lines of code. It's always a good practice to write readable code; therefore, practicing it, is worth it.
+
+Here we install all the necessary back-end libraries that support keras, a deep learning framework, so to access the dataset. Make sure to download pip which is handful tool to install relevent libraries directly to python.
+
+```sh
+$ sudo apt-get update && upgrade
+$ sudo apt install python-pip
+$ pip install numpy scipy matplotlib scikit-image scikit-learn ipython
+$ pip install tensorflow
+$ pip install keras
+```
 
 
 You can also:
