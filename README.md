@@ -102,8 +102,10 @@ class neural_network:
 ```
 
 ### Populating the constructor for the Neural Network
+Code below may seem like a lot, but it really isn't. First we define all the variables that define the architecture of our neural network, some variables contain datasets, both for training and testing. We then use lambda  functions to concisely write activation functions. Rest defines parameters for extraction of sub-section of the image and dimensions of the convolutional layer. At last we define weights for the convolutional kernel and simple weight matrices between hidden and output layer of the neural network. 
 
 ```python
+
 def __init__(self,training_data, training_targets, test_data, test_targets, alpha, iterations, pixels_per_image, num_labels, batch_size):
         """Neural Network's Initializer"""
         
