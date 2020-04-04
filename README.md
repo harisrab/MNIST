@@ -7,7 +7,7 @@ Now this was time for me to learn more about the neural networks and discover wo
 ### Download the Dataset
 There are many ways to download dataset, but here is the one that directly imports the dataset into python with 2 lines of code. It's always a good practice to write readable code; therefore, practicing it, is worth it.
 
-Here we install all the necessary back-end libraries that support keras, a deep learning framework, so to access the dataset. Make sure to download pip which is handful tool to install relevent libraries directly to python.
+Here we install all the necessary back-end libraries that support keras, a deep learning framework, so to access the dataset. Make sure to download pip, which is handy tool to install relevent libraries directly to python.
 
 ```sh
 $ sudo apt-get update && upgrade
@@ -15,6 +15,11 @@ $ sudo apt install python-pip
 $ pip install numpy scipy matplotlib scikit-image scikit-learn ipython
 $ pip install tensorflow
 $ pip install keras
+```
+Then, in the code, we import the data using the command below. We'll later wash and clean the data so that it's ready to be fed to our neural network.
+
+```python
+from keras.datasets import mnist
 ```
 
 
