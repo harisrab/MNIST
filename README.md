@@ -1,5 +1,7 @@
-# Dillinger
-It was time for me to 
+# Barebones Neural Network to Detect Numbers
+
+Now this was time for me to learn more about the neural networks and discover wonderful mechanisms under the hood of state of the art libraries already available on the market. What could be better than notching up the difficulty level from simulating logic gates to training the brain on to detect images from the MNIST Dataset. Above is the code and below is explaination, discussing how does it actually go about detecting images.
+
 # New Features!
 
   - Import a HTML file and watch it magically convert to Markdown
