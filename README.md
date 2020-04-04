@@ -1,7 +1,9 @@
 # Barebones Neural Network to Detect Numbers
+![Cover](https://deeplizard.com/images/ai-cyborg-cropped-2.png)
 
-Now this was time for me to learn more about the neural networks and discover wonderful mechanisms under the hood of state of the art libraries already available on the market. What could be better than notching up the difficulty level from simulating logic gates to training the brain to detect images from the MNIST Dataset. Above is the code and below is explaination, discussing how does it actually goes about detecting images. 
+Now this was time for me to learn more about the neural networks and discover wonderful mechanisms under the hood of state of the art libraries already available on the market. What could be better than notching up the difficulty level from simulating logic gates to training the brain to detect images from the MNIST Dataset. Above is the code and below is explaination, discussing how does it actually go about detecting images. 
 
+  
 ## How to Get the Code Up and Running
 
 ### Download the Dataset
@@ -22,6 +24,31 @@ Then, in the code, we import the data using the command below. We'll later wash 
 from keras.datasets import mnist
 ```
 
+### Pre-Processing the Dataset for Training
+
+If you have some experience handling python statements, which I hope you do, then, the code is self-explainatory. For the sake of wholeness I will explain in general terms the working of this code.
+
+Line 4 downloads dataset seperating it into x_train (list of pixel values for each image) and y_train (list of corresponding labels identifying number contained in those images). The we reshape the data by picking up only the first 1000 images and giving a vector form to contain 784 pixel values, which can be fed directly to the neural network. Correspondingly, in line 7, we pick first 1000 labels for reshaped images. 
+
+
+```python
+1 def Preprocess_Training_Data():
+2     """Method Segregates Dataset for Training"""
+3     
+4     x_train, y_train = mnist.load_data()[0]
+5 
+6     images = x_train[0:1000].reshape(1000,28*28) / 255                  
+7     labels = y_train[0:1000]
+8 
+9
+10    one_hot_labels = np.zeros((len(labels),10))
+11              
+12    for i,l in enumerate(labels):
+13        one_hot_labels[i][l] = 1
+14    labels = one_hot_labels
+15               
+16    return images, labels
+```
 
 You can also:
   - Import and save files from GitHub, Dropbox, Google Drive and One Drive
