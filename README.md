@@ -23,13 +23,14 @@ Then, in the code, we import the data using the command below. We'll later wash 
 ```python
 from keras.datasets import mnist
 ```
+## Explaination for the Moving Parts
 
 ### Pre-Processing the Dataset for Training
 
 If you have some experience handling python statements, which I hope you do, then, the code is self-explainatory. For the sake of wholeness I will explain in general terms the working of this code.
 
 Line 4 downloads dataset seperating it into x_train (list of pixel values for each image) and y_train (list of corresponding labels identifying number contained in those images). The we reshape the data by picking up only the first 1000 images and giving a vector form to contain 784 pixel values, which can be fed directly to the neural network. Correspondingly, in line 7, we pick first 1000 labels for reshaped images. 
-
+Here is the most valuable part: using numpy we create an matrix of zeros. Each row in the matrix represents a number, and then for loop is used to iterate through each array and set the corresponding bit of the number to 1. Effectively, this is the representation for the numbers in binary. This format is essential for our neural network.
 
 ```python
 1 def Preprocess_Training_Data():
@@ -48,6 +49,23 @@ Line 4 downloads dataset seperating it into x_train (list of pixel values for ea
 14    labels = one_hot_labels
 15               
 16    return images, labels
+```
+### Pre-Processing the Dataset for Testing
+
+We do the same as above with dataset for testing. The only difference is that we will not slice the data.
+
+```python
+1  def Preprocess_Test_Data():
+2      """Method for Test Data Segregation"""
+3      (x_test, y_test) = mnist.load_data()[1]
+4      
+5      test_images = x_test.reshape(len(x_test),28*28) / 255
+6      test_labels = np.zeros((len(y_test),10))
+7  
+8      for i,l in enumerate(y_test):
+9           test_labels[i][l] = 1
+10               
+11     return test_images, test_labels
 ```
 
 You can also:
