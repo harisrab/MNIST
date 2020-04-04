@@ -67,6 +67,99 @@ We do the same as above with dataset for testing. The only difference is that we
 10               
 11     return test_images, test_labels
 ```
+### Building an Organized, Extensible Framework for Neural Network
+
+The architecture that I have designed here can be further improved and new features can be added to it. This makes it very easy for anyone to understand how the whole process works. I've made a seperate file to contain this, so to make the code less cluttered. 
+
+```python
+class neural_network:
+  
+  def __init__(self):
+    """ Initilizes the variables and weight matrices required for the neural network """
+    
+    pass
+   
+  def backpropagation(self):
+    """ backpropagates both for normal layers and convolutional layer """
+    
+    pass
+    
+  def forward_convolution(self):
+    """ Brings forward convolution into play """
+    
+    pass
+    
+  def train(self):
+    """ Trains the neural network """
+    
+    pass
+    
+  def Conv_SubSection(self):
+    """ Takes a sub-section snapshot for the image for convolution"""
+    
+    pass
+
+```
+
+### Populating the constructor for the Neural Network
+
+```python
+def __init__(self,training_data, training_targets, test_data, test_targets, alpha, iterations, pixels_per_image, num_labels, batch_size):
+        """Neural Network's Initializer"""
+        
+        print '[+] Neural Network Initilized'
+        
+        #Initilize the parameters
+        self.__training_data    = training_data
+        self.__training_targets = training_targets
+        self.__test_data        = test_data
+        self.__test_targets     = test_targets
+        self.__alpha            = alpha
+        self.__epochs           = iterations
+        self.__pixels_per_image = pixels_per_image
+        self.__num_labels       = num_labels
+        self.__batch_size       = batch_size
+        self.__test_correct_cnt = 0 
+        
+        self.__error       = 0.0
+        self.__correct_cnt = 0
+
+        #Initlize the seed
+        np.random.seed(1)
+       
+        #Activation Functions
+        self.__relu       = lambda x : (x >= 0) * x 
+        self.__relu2deriv = lambda x : (x >= 0)
+        self.__tanh       = lambda x : np.tanh(x)
+        self.__tanh2deriv = lambda x : (1 - (x ** 2))
+        self.__softmax    = lambda x : (np.exp(x) / np.sum(np.exp(x), axis = 1, keepdims = True))
+
+        '''Convolutional Parameters'''
+
+        #Dimensions of Orignal Image
+        self.__input_rows       = 28
+        self.__input_columns    = 28
+    
+        #Dimensions of Subsection
+        self.__kernel_rows      = 3
+        self.__kernel_columns   = 3
+
+        self.__num_kernels      = 16
+
+        self.__hidden_size      = ((self.__input_rows - self.__kernel_rows) * (self.__input_columns - self.__kernel_columns)) * self.__num_kernels 
+    
+        self.__kernels          = 0.02 * np.random.random((self.__kernel_rows * self.__kernel_columns, self.__num_kernels)) - 0.01
+        
+        #Initilize Weight Matrices
+        self.__weights_12 = 0.2 * np.random.random((self.__hidden_size, self.__num_labels)) - 0.1
+        #self.__weights_12 = 0.2 * np.random.random((hidden_size,num_labels)) - 0.1
+        
+        print '[+] Neural Parameters Established'
+        print ''
+
+```
+
+
 
 You can also:
   - Import and save files from GitHub, Dropbox, Google Drive and One Drive
