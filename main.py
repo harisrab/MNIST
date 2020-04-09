@@ -75,7 +75,7 @@ def main():
                 
                 Img= Image.open(PATH + filename)
                 inputs = np.asarray(Img)
-                inputs = inputs.reshape(1,784)
+                inputs = inputs.reshape(1,784) / 255
 
                 number = str(Img_Recognizer.detect_number_present(inputs)) + ".jpg"
                 os.rename(os.path.join(PATH, filename), os.path.join(PATH, number))
