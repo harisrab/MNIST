@@ -50,26 +50,10 @@ Here is the most valuable part: using numpy we create an matrix of zeros. Each r
 15               
 16    return images, labels
 ```
-### Pre-Processing the Dataset for Testing
 
-We do the same as above with dataset for testing. The only difference is that we will not slice the data.
-
-```python
-1  def Preprocess_Test_Data():
-2      """Method for Test Data Segregation"""
-3      (x_test, y_test) = mnist.load_data()[1]
-4      
-5      test_images = x_test.reshape(len(x_test),28*28) / 255
-6      test_labels = np.zeros((len(y_test),10))
-7  
-8      for i,l in enumerate(y_test):
-9           test_labels[i][l] = 1
-10               
-11     return test_images, test_labels
-```
 ### Building an Organized, Extensible Framework for Neural Network
 
-The architecture that I have designed here can be further improved and new features can be added to it. This makes it very easy for anyone to understand how the whole process works. I've made a seperate file to contain this, so to make the code less cluttered. 
+The architecture that I have designed here can be further improved and new features can be added to it. This makes it very easy for anyone to understand how the whole process works. I've made a seperate file (neural_container.py) to contain this, so to make the code less cluttered. 
 
 ```python
 class neural_network:
@@ -130,8 +114,6 @@ def __init__(self,training_data, training_targets, test_data, test_targets, alph
         np.random.seed(1)
        
         #Activation Functions
-        self.__relu       = lambda x : (x >= 0) * x 
-        self.__relu2deriv = lambda x : (x >= 0)
         self.__tanh       = lambda x : np.tanh(x)
         self.__tanh2deriv = lambda x : (1 - (x ** 2))
         self.__softmax    = lambda x : (np.exp(x) / np.sum(np.exp(x), axis = 1, keepdims = True))
@@ -160,6 +142,50 @@ def __init__(self,training_data, training_targets, test_data, test_targets, alph
         print ''
 
 ```
+
+### Populate the Forward Propagation
+
+We've named this function, which is a part of the above class, detect_number_present. This takes in a vectorized image of a number from MNIST test dataset, of shape (1, 784), to throughput a number that this neural network thinks is contained within the image. This network contains one convolutional layer that convolves the image from left to right to extract features such as curves, edges, which maybe unique to each of the numbers. This helps distinguish between numbers 2 and 3 which may, otherwise, seem simillar. The network must be trained before initiating forward propagation, which, otherwise, would produce dubious results.
+
+```python
+def detect_number_present(self, vector):
+
+        layer_0 = vector
+        layer_0 = layer_0.reshape(layer_0.shape[0], 28, 28)
+        layer_0.shape
+        
+        sects = list()
+
+        for row_start in range(layer_0.shape[1] - self.__kernel_rows):
+            for col_start in range(layer_0.shape[2] - self.__kernel_columns):
+                sect = self.get_image_section(layer_0, row_start, row_start + self.__kernel_rows, col_start, col_start + self.__kernel_columns)
+                sects.append(sect)
+
+        expanded_input = np.concatenate(sects, axis = 1)
+        es = expanded_input.shape
+        flattened_input = expanded_input.reshape(es[0] * es[1], -1)
+
+        kernel_output = flattened_input.dot(self.__kernels)
+        layer_1 = self.__tanh(kernel_output.reshape(es[0], -1))
+
+        
+        layer_2 = self.__softmax(np.dot(layer_1, self.__weights_12))
+
+        max_index = np.unravel_index(np.argmax(layer_2, axis=None), layer_2.shape)[1]
+
+
+        return max_index
+        
+```
+### Main Function 
+
+In the main function we summarize the functionality of the neural network. We call the function to process the dataset for training, segregating it into labels and inputs. Then, comes the defination  of parameters for neural container, which are determined by trial and error for best performance. 
+
+Then we have a very basic front-end for user interaction that displays options to train, and subsequently, use the neural network with trained weights to predict numbers contained in images. Program iterates through every file in the assets folder, vectorizes it, and feeds it through the neural network to rename the image with the detected number. 
+
+![](https://github.com/harisrab/MNIST/blob/master/resource/Screenshot%20from%202020-04-08%2021-07-22.png)
+
+![](https://github.com/harisrab/MNIST/blob/master/resource/Screenshot%20from%202020-04-08%2021-12-53.png)
 
 
 
